@@ -34,27 +34,31 @@ To write and execute an Assembly language program to perform the factorial of a 
 ## PROGRAM
 ```asm
 ORG 0000H
-MOV DPTR,#4500H
-MOVX A,@DPTR
-MOV R0,A
-INC DPTR
-ACALL FACTORIAL
-MOVX @DPTR,A
-SJMP THIN
-FACTORIAL:DEC R0
-CJNE R0,#01H,PRODUCT
-SJMP THICK
-PRODUCT:MOV B,R0
-MUL AB
-ACALL FACTORIAL
-THICK: RET
-THIN:RET
+MOV R0, #50H    ; R0 now points to memory address 50H
+MOV A, @R0      ; A = the VALUE stored at address 50H (Indirect Addressing)
+
+JZ ZERO_CASE    ; If the input is 0, the factorial is 1
+MOV R1, A       ; Use R1 as our multiplier/counter
+MOV A, #01H     ; Start our product at 1
+
+FACT:
+    MOV B, R1   ; Load counter into B
+    MUL AB      ; A = A * B
+    DJNZ R1, FACT ; Decrement R1 and repeat until 0
+
+SJMP SAVE
+
+ZERO_CASE:
+    MOV A, #01H ; 0! is 1
+
+SAVE:
+    MOV 51H, A  ; Store result in 51H
 END
 
 ```
 OUTPUT
 
-(Keil output screenshot can be inserted here)
+![Factorial](Factorial.png)
 
 ---
 MANUAL CALCULATIONS
